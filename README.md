@@ -29,7 +29,9 @@ Then open Insomnia at `http://localhost:3001/`
 
 This application allows the user to interact with the tables of categories, products, and tags. They are able to view, add, edit, and delete information in the database.
 
-Link to Demo Video: LINK GOES HERE
+Link to Demo Video: 
+https://drive.google.com/file/d/1sT6dwnO3a4P_Ut31jdJFlf_GAei3z_q9/view
+
 
 ## Credits
 
