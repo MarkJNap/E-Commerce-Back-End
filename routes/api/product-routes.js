@@ -5,14 +5,34 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 
 // get all products
 router.get('/', async (req, res) => {
-  // TODO: find all products
-  // be sure to include its associated Category and Tag data
+  // Gets all products and has their associated Category and Tag data
+  try {
+    const allProducts = await Product.findAll( {
+      include: Category,
+      include: Tag
+    })
+    res.status(200).json(allProducts)
+  } catch (err) {
+    res.status(500).json(err)
+  }
 });
 
 // get one product
 router.get('/:id', async (req, res) => {
-  // TODO: find a single product by its `id`
-  // be sure to include its associated Category and Tag data
+  // Find a single product by its id and includes its associated Category and Tag data
+  try {
+    const product = await Product.findByPk(req.params.id, {
+      include: Category,
+      include: Tag
+    })
+    if (!product) {
+      res.status(404).json( { message: "No Product found with the id: " + req.params.id})
+      return
+    }
+    res.status(200).json(product)
+  } catch (err) {
+    res.status(500).json(err)
+  }
 });
 
 // create new product
@@ -40,7 +60,7 @@ router.post('/', (req, res) => {
       // if no product tags, just respond
       res.status(200).json(product);
     })
-    .then((productTagIds) => res.status(200).json(productTagIds))
+    .then((productTagIds) => res.status(200).json({ message: "Succesfully created the product: " + req.body.product_name }))
     .catch((err) => {
       console.log(err);
       res.status(400).json(err);
@@ -82,7 +102,7 @@ router.put('/:id', (req, res) => {
         ProductTag.bulkCreate(newProductTags),
       ]);
     })
-    .then((updatedProductTags) => res.json(updatedProductTags))
+    .then((updatedProductTags) => res.json({ message: "Succesfully updated the product: " + req.body.product_name }))
     .catch((err) => {
       // console.log(err);
       res.status(400).json(err);
@@ -90,7 +110,21 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-  // TODO: delete one product by its `id` value
+  // Delete one product by its id value
+  try {
+    const deleteProduct = await Product.destroy({
+      where: {
+        id: req.params.id
+      }
+    })
+    if (!deleteProduct) {
+      res.status(404).json( { message: "No product found with the id: " + req.params.id})
+      return
+    }
+    res.status(200).json( { message: "Successfully deleted."})
+  } catch (err) {
+    res.status(500).json(err)
+  }
 });
 
 module.exports = router;
